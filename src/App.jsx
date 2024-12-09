@@ -8,7 +8,7 @@ function App() {
 
   return (
     <>
-      <p>Walled</p>
+      <p className="text-3xl font-bold underline">Walled</p>
     </>
   );
 }
