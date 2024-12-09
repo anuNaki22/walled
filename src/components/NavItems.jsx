@@ -1,29 +1,26 @@
-import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
-function NavItems({ menu, activeTab, handleClick }) {
+function NavItems({ menu }) {
+  const location = useLocation(); // Hook untuk mendapatkan path aktif
+  const currentPath = location.pathname;
+
   return (
     <div className="flex gap-x-8">
       {menu.map((item, index) => (
-        <a
-          onClick={() => {
-            handleClick(item.title);
-          }}
-          className={
-            activeTab !== item.title ? "text-black" : "text[#19918F] font bold"
-          }
+        <Link
+          to={item.link} // Gunakan `to` dari react-router-dom
           key={index}
-          href={item.link}
+          className={`${
+            currentPath === item.link
+              ? "text-[#19918F] font-bold"
+              : "text-black"
+          }`}
         >
           {item.title}
-        </a>
+        </Link>
       ))}
     </div>
   );
 }
 
 export default NavItems;
-
-// // arrow function
-// const NavItems = () => (
-
-// )
