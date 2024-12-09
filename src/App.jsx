@@ -4,6 +4,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import logo from "./assets/logo.png";
 import NavItems from "./components/NavItems";
+import Profile from "./components/Profile";
 
 function App() {
   const [activeTab, setActiveTab] = useState("Dashboard");
@@ -44,6 +45,7 @@ function App() {
           />
         </div>
       </nav>
+      <Profile />
     </>
   );
 }
