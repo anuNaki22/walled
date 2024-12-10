@@ -7,7 +7,7 @@ function Login() {
 
   const handleLogin = (event) => {
     event.preventDefault(); // Mencegah reload halaman
-    navigate("/dashboard"); // Arahkan ke halaman dashboard
+    navigate("/dashboard"); // Mengarahkan ke halaman dashboard
   };
 
   return (
