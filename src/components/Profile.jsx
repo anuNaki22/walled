@@ -6,20 +6,43 @@ import addIcon from "../assets/icon-add.png";
 
 const Profile = () => {
   const [showBalance, setShowBalance] = useState(true);
-  const [userEmail, setUserEmail] = useState(""); // State untuk menyimpan email pengguna
+  const [userData, setUserData] = useState(null); // State untuk menyimpan data user dari db.json
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Ambil email dari localStorage saat komponen pertama kali dimuat
-    const email = localStorage.getItem("email");
-    if (email) {
-      setUserEmail(email);
-    }
+    const fetchUserData = async () => {
+      const email = localStorage.getItem("email");
+
+      if (email) {
+        try {
+          const response = await fetch("http://localhost:3000/users");
+          if (!response.ok) {
+            throw new Error("Failed to fetch user data");
+          }
+          const users = await response.json();
+          const user = users.find((user) => user.email === email);
+
+          if (user) {
+            setUserData(user);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchUserData();
   }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (!userData) return <div>No user data found</div>;
 
   return (
     <div className="w-full relative p-10 h-auto text-left text-base text-black font-open-sans">
       <b className="top-0 left-0 text-5xl">
-        Good Morning, {userEmail || "User"}
+        Good Morning, {userData?.fullname || "User"}
       </b>
       <div className="top-16 left-0 text-lg pt-5">
         Check all your incoming and outgoing transactions here
@@ -33,20 +56,22 @@ const Profile = () => {
         Personal Account
       </div>
       <b className="absolute top-10 right-40 text-right w-40">
-        {userEmail || "User"}
+        {userData?.email || "User"}
       </b>
       {/* Account Number and Balance */}
       <div className="flex mt-[4.5rem] gap-x-12 text-2xl">
         <div className="bg-[#19918F] p-12 rounded-2xl w-1/5 text-white">
           <p>Account No.</p>
-          <p className="mt-3 font-bold">100899</p>
+          <p className="mt-3 font-bold">{userData?.accountNumber || "N/A"}</p>
         </div>
         <div className="bg-white p-12 rounded-2xl w-full text-black flex items-center justify-between">
           <div>
             <p>Balance</p>
             <span className="flex items-center mt-3 gap-x-2">
               <p className="font-bold">
-                {showBalance ? "Rp10.000.000,00" : "Rp ********"}
+                {showBalance
+                  ? `Rp ${userData?.balance?.toLocaleString() || "0"}`
+                  : "Rp ********"}
               </p>
               <img
                 src={viewIcon}

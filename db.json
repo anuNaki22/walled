@@ -2,10 +2,10 @@
     "users": [
     {
       "fullname": "Rahmat Faris Akbar",
-      "password": "12345",
+      "password": "123456",
       "email": "rahmat@mail.com",
-      "accountNumber": "100899",
-      "balance": "10000000"
+      "accountNumber": "0123456",
+      "balance": "69696969"
     }
   ]
   }
