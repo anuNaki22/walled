@@ -1,26 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import image1 from "../assets/image-1.png";
 import logo from "../assets/logo-login.png";
 
 function Login() {
-  const navigate = useNavigate(); // Hook untuk navigasi
+  const navigate = useNavigate();
 
   // Periksa apakah user sudah login
   const checkLoginStatus = () => {
     if (localStorage.getItem("isLoggedIn")) {
-      navigate("/dashboard"); // Jika sudah login, langsung arahkan ke dashboard
+      navigate("/dashboard"); // Arahkan langsung ke dashboard
     }
   };
 
-  // Jalankan saat komponen pertama kali dimuat
-  React.useEffect(() => {
-    checkLoginStatus();
+  useEffect(() => {
+    checkLoginStatus(); // Jalankan pengecekan saat komponen pertama kali dimuat
   }, []);
 
   const handleLogin = (event) => {
     event.preventDefault();
-    localStorage.setItem("isLoggedIn", "true"); // Tandai user sudah login
+    const email = event.target.email.value; // Ambil nilai email dari formulir
+    const password = event.target.password.value; // Ambil nilai password dari formulir
+
+    // Validasi sederhana jika input kosong
+    if (!email || !password) {
+      alert("Email dan Password harus diisi!");
+      return;
+    }
+
+    // Simpan status login ke localStorage
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("email", email); // Simpan email untuk kebutuhan dashboard atau profil
+
+    // Arahkan ke halaman dashboard
     navigate("/dashboard");
   };
 

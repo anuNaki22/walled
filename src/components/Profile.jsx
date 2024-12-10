@@ -1,15 +1,26 @@
 import photoProfile from "../assets/photo-profile.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import viewIcon from "../assets/view.png";
 import sentIcon from "../assets/icon-sent.png";
 import addIcon from "../assets/icon-add.png";
 
 const Profile = () => {
   const [showBalance, setShowBalance] = useState(true);
+  const [userEmail, setUserEmail] = useState(""); // State untuk menyimpan email pengguna
+
+  useEffect(() => {
+    // Ambil email dari localStorage saat komponen pertama kali dimuat
+    const email = localStorage.getItem("email");
+    if (email) {
+      setUserEmail(email);
+    }
+  }, []);
 
   return (
     <div className="w-full relative p-10 h-auto text-left text-base text-black font-open-sans">
-      <b className="top-0 left-0 text-5xl">Good Morning, Chelsea</b>
+      <b className="top-0 left-0 text-5xl">
+        Good Morning, {userEmail || "User"}
+      </b>
       <div className="top-16 left-0 text-lg pt-5">
         Check all your incoming and outgoing transactions here
       </div>
@@ -22,7 +33,7 @@ const Profile = () => {
         Personal Account
       </div>
       <b className="absolute top-10 right-40 text-right w-40">
-        Chelsea Immanuela
+        {userEmail || "User"}
       </b>
       {/* Account Number and Balance */}
       <div className="flex mt-[4.5rem] gap-x-12 text-2xl">
