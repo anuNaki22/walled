@@ -11,7 +11,7 @@ function Register() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row w-full h-screen bg-white">
+    <div className="flex flex-col md:flex-row w-full h-screen bg-white text-black">
       {/* Bagian Form */}
       <div className="flex flex-col justify-center items-center px-10 md:px-20 w-full md:w-1/2 space-y-8">
         <div>
