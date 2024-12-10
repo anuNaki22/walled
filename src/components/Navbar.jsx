@@ -16,7 +16,7 @@ const MENU = [
   },
   {
     title: "Sign Out",
-    link: "/login",
+    link: "/",
   },
 ];
 

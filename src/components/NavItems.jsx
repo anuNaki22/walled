@@ -1,23 +1,33 @@
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function NavItems({ menu }) {
-  const location = useLocation(); // Hook untuk mendapatkan path aktif
-  const currentPath = location.pathname;
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLogout = () => {
+    // Menghapus sesi (misalnya token, login status) dari localStorage
+    localStorage.removeItem("isLoggedIn");
+
+    // Navigasi ke halaman login
+    navigate("/login", { replace: true }); // Menggunakan `{ replace: true }` agar pengguna tidak bisa kembali dengan tombol Back
+  };
 
   return (
     <div className="flex gap-x-8">
       {menu.map((item, index) => (
-        <Link
-          to={item.link} // Gunakan `to` dari react-router-dom
+        <div
           key={index}
-          className={`${
-            currentPath === item.link
+          className={`cursor-pointer ${
+            location.pathname === item.link
               ? "text-[#19918F] font-bold"
               : "text-black"
           }`}
+          onClick={
+            item.title === "Sign Out" ? handleLogout : () => navigate(item.link)
+          }
         >
           {item.title}
-        </Link>
+        </div>
       ))}
     </div>
   );
