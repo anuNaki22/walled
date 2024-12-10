@@ -48,8 +48,8 @@ const TableTransactions = () => {
       </div>
 
       <div className="pr-10 pl-10 overflow-x-auto text-black">
-        <table className="table-auto w-full text-left border-collapse border border-gray-300">
-          <thead className="bg-gray-100">
+        <table className="table-auto w-full text-left border-collapse border border-white">
+          <thead className="bg-white">
             <tr>
               <th className="px-4 py-2 border border-gray-300">Date & Time</th>
               <th className="px-4 py-2 border border-gray-300">Type</th>
@@ -64,7 +64,7 @@ const TableTransactions = () => {
                 <tr
                   key={index}
                   className={`${
-                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    index % 2 === 1 ? "bg-white" : "bg-gray-50"
                   } hover:bg-gray-100`}
                 >
                   <td className="px-4 py-2 border border-gray-300">
