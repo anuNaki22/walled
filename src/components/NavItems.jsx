@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 
-function NavItems({ menu }) {
+function NavItems({ menu, theme }) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -9,7 +9,7 @@ function NavItems({ menu }) {
     localStorage.removeItem("isLoggedIn");
 
     // Navigasi ke halaman login
-    navigate("/login", { replace: true }); // Menggunakan `{ replace: true }` agar pengguna tidak bisa kembali dengan tombol Back
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -19,8 +19,12 @@ function NavItems({ menu }) {
           key={index}
           className={`cursor-pointer ${
             location.pathname === item.link
-              ? "text-[#19918F] font-bold"
-              : "text-black"
+              ? `${
+                  theme === "dark"
+                    ? "text-blue-300 font-bold"
+                    : "text-[#19918F] font-bold"
+                }`
+              : `${theme === "dark" ? "text-white" : "text-black"}`
           }`}
           onClick={
             item.title === "Sign Out" ? handleLogout : () => navigate(item.link)

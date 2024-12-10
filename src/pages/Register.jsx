@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import image1 from "../assets/image-1.png";
 import logo from "../assets/logo-login.png";
+import ActionButton from "../components/ActionButton";
 
 function Register() {
-  const navigate = useNavigate(); // Hook untuk navigasi
+  const navigate = useNavigate();
 
   const handleRegister = (event) => {
     event.preventDefault(); // Mencegah reload halaman
+    // Anda bisa menambahkan validasi form di sini jika diperlukan
     navigate("/login"); // Arahkan ke halaman login
   };
 
@@ -46,12 +48,8 @@ function Register() {
             type="tel"
             placeholder="No HP"
           />
-          <button
-            type="submit"
-            className="w-full py-3 bg-[#19918F] text-white font-bold text-lg rounded-lg hover:shadow-lg hover:shadow-[#00FFFF] transition-all duration-200"
-          >
-            Register
-          </button>
+          {/* Mengganti tombol dengan ActionButton */}
+          <ActionButton onClick={handleRegister}>Daftar</ActionButton>
         </form>
         {/* Link Daftar */}
         <p className="text-sm text-black">

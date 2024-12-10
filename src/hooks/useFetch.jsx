@@ -1,31 +1,29 @@
 import { useState, useEffect } from "react";
 
-// Hook untuk mengambil data user
-const useFetch = () => {
-  const [userData, setUserData] = useState([]);
+function useFetch(url) {
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchData = async (url) => {
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) throw new Error("Network response was not ok");
+      const result = await response.json();
+      setData(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/users");
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-        const data = await response.json();
-        setUserData(data.users); // Ambil array users
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchData(url);
+  }, [url]);
 
-    fetchData();
-  }, []);
-
-  return { userData, loading, error };
-};
+  return { data, loading, error };
+}
 
 export default useFetch;

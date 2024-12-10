@@ -1,10 +1,14 @@
 import photoProfile from "../assets/photo-profile.png";
 import { useEffect, useState } from "react";
 import viewIcon from "../assets/view.png";
-import sentIcon from "../assets/icon-sent.png";
-import addIcon from "../assets/icon-add.png";
+import ActionButton from "./ActionButton";
+import plusIcon from "../assets/plus.svg";
+import sendIcon from "../assets/send.svg";
+import { useTheme } from "../context/ThemeContext"; // Import ThemeContext
+import clsx from "clsx";
 
 const Profile = () => {
+  const { theme } = useTheme(); // Mengambil tema dari konteks
   const [showBalance, setShowBalance] = useState(true);
   const [userData, setUserData] = useState(null); // State untuk menyimpan data user dari db.json
   const [loading, setLoading] = useState(true);
@@ -39,8 +43,16 @@ const Profile = () => {
   if (loading) return <div>Loading...</div>;
   if (!userData) return <div>No user data found</div>;
 
+  const bgPrimary = theme === "dark" ? "bg-blue-900" : "bg-[#19918F]";
+  const textPrimary = theme === "dark" ? "text-gray-800" : "text-black";
+  const photoBorder = theme === "dark" ? "border-blue-900" : "border-[#19918F]";
+  const cardBg =
+    theme === "dark" ? "bg-gray-800 text-gray-200" : "bg-white text-black";
+
   return (
-    <div className="w-full relative p-10 h-auto text-left text-base text-black font-open-sans">
+    <div
+      className={`w-full relative p-10 h-auto text-left text-base font-open-sans ${textPrimary}`}
+    >
       <b className="top-0 left-0 text-5xl">
         Good Morning, {userData?.fullname || "User"}
       </b>
@@ -48,7 +60,11 @@ const Profile = () => {
         Check all your incoming and outgoing transactions here
       </div>
       <img
-        className="absolute top-5 right-10 w-20 h-20 object-contain rounded-full border-2 border-transparent hover:border-[#19918F] hover:border-8"
+        className={`absolute top-5 right-10 w-20 h-20 object-contain rounded-full border-2 border-transparent hover:border-[#19918F] hover:border-8`}
+        // className={clsx(
+        //   "absolute top-5 right-10 w-20 h-20 object-contain rounded-full border-2 border-transparent hover:border-8",
+        //   { [photoBorder]: true }
+        // )}
         alt="photo profile"
         src={photoProfile}
       />
@@ -59,18 +75,24 @@ const Profile = () => {
         {userData?.email || "User"}
       </b>
       {/* Account Number and Balance */}
-      <div className="flex mt-[4.5rem] gap-x-12 text-2xl">
-        <div className="bg-[#19918F] p-12 rounded-2xl w-1/5 text-white">
+      <div className="flex mt-[4.5rem] gap-x-12 text-xl">
+        <div className={`${bgPrimary} p-12 rounded-2xl w-1/5 text-white`}>
           <p>Account No.</p>
-          <p className="mt-3 font-bold">{userData?.accountNumber || "N/A"}</p>
+          <p className="mt-3 font-bold text-2xl">
+            {userData?.accountNumber || "N/A"}
+          </p>
         </div>
-        <div className="bg-white p-12 rounded-2xl w-full text-black flex items-center justify-between">
+        <div
+          className={`${cardBg} p-12 rounded-2xl w-full flex items-center justify-between`}
+        >
           <div>
             <p>Balance</p>
             <span className="flex items-center mt-3 gap-x-2">
-              <p className="font-bold">
+              <p className="font-bold text-2xl">
                 {showBalance
-                  ? `Rp ${userData?.balance?.toLocaleString() || "0"}`
+                  ? `Rp ${Number(userData?.balance || 0).toLocaleString(
+                      "id-ID"
+                    )}`
                   : "Rp ********"}
               </p>
               <img
@@ -81,13 +103,13 @@ const Profile = () => {
               />
             </span>
           </div>
-          <div className="flex gap-x-2">
-            <img src={addIcon} alt="add" className="w-12 h-12 cursor-pointer" />
-            <img
-              src={sentIcon}
-              alt="sent"
-              className="w-12 h-12 cursor-pointer"
-            />
+          <div className="flex gap-x-6">
+            <ActionButton>
+              <img src={plusIcon} alt="plus icon" className="w-4 h-4" />
+            </ActionButton>
+            <ActionButton>
+              <img src={sendIcon} alt="send icon" className="w-4 h-4" />
+            </ActionButton>
           </div>
         </div>
       </div>
