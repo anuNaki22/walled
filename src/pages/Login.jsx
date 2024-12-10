@@ -17,23 +17,44 @@ function Login() {
     checkLoginStatus(); // Jalankan pengecekan saat komponen pertama kali dimuat
   }, []);
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
     const email = event.target.email.value; // Ambil nilai email dari formulir
     const password = event.target.password.value; // Ambil nilai password dari formulir
 
-    // Validasi sederhana jika input kosong
+    // Validasi input kosong
     if (!email || !password) {
       alert("Email dan Password harus diisi!");
       return;
     }
 
-    // Simpan status login ke localStorage
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("email", email); // Simpan email untuk kebutuhan dashboard atau profil
+    try {
+      // Ambil data dari db.json melalui server lokal
+      const response = await fetch("http://localhost:3000/users");
+      const users = await response.json();
 
-    // Arahkan ke halaman dashboard
-    navigate("/dashboard");
+      // Periksa apakah email dan password cocok dengan data dari db.json
+      const user = users.find(
+        (user) => user.email === email && user.password === password
+      );
+
+      if (user) {
+        // Simpan status login dan informasi user ke localStorage
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("email", user.email);
+        localStorage.setItem("fullname", user.fullname);
+        localStorage.setItem("accountNumber", user.accountNumber);
+        localStorage.setItem("balance", user.balance);
+
+        // Arahkan ke halaman dashboard
+        navigate("/dashboard");
+      } else {
+        alert("Email atau password salah!");
+      }
+    } catch (error) {
+      console.error("Error saat memuat data pengguna:", error);
+      alert("Terjadi kesalahan saat memuat data pengguna.");
+    }
   };
 
   return (
@@ -52,7 +73,6 @@ function Login() {
           />
           <input
             className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
-            id="password"
             name="password"
             type="password"
             placeholder="Password"
