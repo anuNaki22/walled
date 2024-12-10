@@ -5,7 +5,7 @@ import logo from "../assets/logo-login.png";
 function Register() {
   const navigate = useNavigate(); // Hook untuk navigasi
 
-  const handleLogin = (event) => {
+  const handleRegister = (event) => {
     event.preventDefault(); // Mencegah reload halaman
     navigate("/login"); // Arahkan ke halaman login
   };
@@ -17,72 +17,35 @@ function Register() {
         <div>
           <img src={logo} alt="Logo" />
         </div>
-        <form className="w-full space-y-6" onSubmit={handleLogin}>
-          {/* Input Nama Lengkap dengan Floating Label */}
-          <div className="relative w-full">
-            <input
-              id="fullname"
-              type="text"
-              placeholder=" "
-              className="peer w-full p-3 border border-gray-300 rounded-lg bg-[#FAFBFD] text-black focus:ring-2 focus:ring-slate-400 focus:outline-none"
-              required
-            />
-            <label
-              htmlFor="text"
-              className="absolute text-black font-semibold left-3 top-1/2 transform -translate-y-1/2 scale-100 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:top-2 peer-focus:scale-90 peer-focus:text-black peer-valid:top-2 peer-valid:scale-90 peer-valid:text-black"
-            >
-              Nama Lengkap
-            </label>
-          </div>
-          {/* Input Email dengan Floating Label */}
-          <div className="relative w-full">
-            <input
-              id="email"
-              type="email"
-              placeholder=" "
-              className="peer w-full p-3 border border-gray-300 rounded-lg bg-[#FAFBFD] text-black focus:ring-2 focus:ring-slate-400 focus:outline-none"
-              required
-            />
-            <label
-              htmlFor="email"
-              className="absolute text-black font-semibold left-3 top-1/2 transform -translate-y-1/2 scale-100 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:top-2 peer-focus:scale-90 peer-focus:text-black peer-valid:top-2 peer-valid:scale-90 peer-valid:text-black"
-            >
-              Email
-            </label>
-          </div>
-          {/* Input Password dengan Floating Label */}
-          <div className="relative w-full">
-            <input
-              id="password"
-              type="password"
-              placeholder=" "
-              className="peer w-full p-3 border border-gray-300 rounded-lg bg-[#FAFBFD] text-black focus:ring-2 focus:ring-slate-400 focus:outline-none"
-              required
-            />
-            <label
-              htmlFor="password"
-              className="absolute text-black font-semibold left-3 top-1/2 transform -translate-y-1/2 scale-100 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:top-2 peer-focus:scale-90 peer-focus:text-black peer-valid:top-2 peer-valid:scale-90 peer-valid:text-black"
-            >
-              Password
-            </label>
-          </div>
-          {/* Input No HP dengan Floating Label */}
-          <div className="relative w-full">
-            <input
-              id="phonenumber"
-              type="tel"
-              placeholder=" "
-              className="peer w-full p-3 border border-gray-300 rounded-lg bg-[#FAFBFD] text-black focus:ring-2 focus:ring-slate-400 focus:outline-none"
-              required
-            />
-            <label
-              htmlFor="tel"
-              className="absolute text-black font-semibold left-3 top-1/2 transform -translate-y-1/2 scale-100 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:scale-100 peer-placeholder-shown:text-black peer-focus:top-2 peer-focus:scale-90 peer-focus:text-black peer-valid:top-2 peer-valid:scale-90 peer-valid:text-black"
-            >
-              No. HP
-            </label>
-          </div>
-          {/* Button Register */}
+        <form className="flex flex-col mt-24 gap-y-5" onSubmit={handleRegister}>
+          <input
+            className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
+            id="fullname"
+            name="fullname"
+            type="text"
+            placeholder="Nama Lengkap"
+          />
+          <input
+            className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Email"
+          />
+          <input
+            className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Password"
+          />
+          <input
+            className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
+            id="phonenumber"
+            name="phonenumber"
+            type="tel"
+            placeholder="No HP"
+          />
           <button
             type="submit"
             className="w-full py-3 bg-[#19918F] text-white font-bold text-lg rounded-lg hover:bg-darkcyan/90"
