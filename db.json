@@ -1,11 +1,83 @@
 {
     "users": [
-    {
-      "fullname": "Rahmat Faris Akbar",
-      "password": "123456",
-      "email": "rahmat@mail.com",
-      "accountNumber": "0123456",
-      "balance": "69696969"
-    }
-  ]
+      {
+        "fullname": "Rahmat Faris Akbar",
+        "password": "123456",
+        "email": "rahmat@mail.com",
+        "accountNumber": "0123456",
+        "balance": "69696969",
+        "transactions": [
+          {
+            "dateTime": "2024-12-10 12:30 PM",
+            "type": "DEBIT",
+            "fromTo": "310001001",
+            "description": "Fore Coffee",
+            "amount": "20000"
+          },
+          {
+            "dateTime": "2024-12-09 3:45 PM",
+            "type": "CREDIT",
+            "fromTo": "1001",
+            "description": "Topup from Bank Transfer",
+            "amount": "5000000"
+          },
+          {
+            "dateTime": "2024-12-10 12:30 PM",
+            "type": "DEBIT",
+            "fromTo": "310001001",
+            "description": "Fore Coffee",
+            "amount": "20000"
+          },
+          {
+            "dateTime": "2024-12-09 3:45 PM",
+            "type": "CREDIT",
+            "fromTo": "1001",
+            "description": "Topup from Bank Transfer",
+            "amount": "5000000"
+          },
+          {
+            "dateTime": "2024-12-10 12:30 PM",
+            "type": "DEBIT",
+            "fromTo": "310001001",
+            "description": "Fore Coffee",
+            "amount": "20000"
+          },
+          {
+            "dateTime": "2024-12-09 3:45 PM",
+            "type": "CREDIT",
+            "fromTo": "1001",
+            "description": "Topup from Bank Transfer",
+            "amount": "5000000"
+          },
+          {
+            "dateTime": "2024-12-10 12:30 PM",
+            "type": "DEBIT",
+            "fromTo": "310001001",
+            "description": "Fore Coffee",
+            "amount": "20000"
+          },
+          {
+            "dateTime": "2024-12-09 3:45 PM",
+            "type": "CREDIT",
+            "fromTo": "1001",
+            "description": "Topup from Bank Transfer",
+            "amount": "5000000"
+          },{
+            "dateTime": "2024-12-10 12:30 PM",
+            "type": "DEBIT",
+            "fromTo": "310001001",
+            "description": "Fore Coffee",
+            "amount": "20000"
+          },
+          {
+            "dateTime": "2024-12-09 3:45 PM",
+            "type": "CREDIT",
+            "fromTo": "1001",
+            "description": "Topup from Bank Transfer",
+            "amount": "5000000"
+          }
+        ]
+      }
+    ]
   }
+  

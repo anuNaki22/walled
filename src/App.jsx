@@ -1,11 +1,12 @@
 import "./App.css";
 import Profile from "./components/Profile";
-import Navbar from "./components/Navbar";
+import TableTransactions from "./components/TableTransactions";
 
 function App() {
   return (
     <main>
       <Profile />
+      <TableTransactions />
     </main>
   );
 }
