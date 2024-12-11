@@ -41,9 +41,40 @@ const TableTransactions = () => {
     <>
       <div className="flex items-center text-black">
         <SearchBar />
-        <div className="ml-auto flex items-center">
+        {/* <div className="ml-auto flex items-center">
           <span className="text-gray-700">Show</span>
           <FilterButton />
+        </div> */}
+        <div className="ml-auto flex items-center">
+          <div className="flex gap-x-4 items-center mr-10">
+            <p className="text-[#737373]">Show</p>
+            <select
+              name="limit"
+              id="limit"
+              className="text-[#737373] py-3 px-4 rounded-md border-r-8 border-transparent bg-white shadow-md"
+            >
+              <option value="10">Limit 10 transactions</option>
+              <option value="20">Limit 20 transactions</option>
+            </select>
+          </div>
+          <div className="flex gap-x-2 items-center mr-10">
+            <p className="text-[#737373] mr-3">Sort by</p>
+            <select
+              name="date"
+              id="date"
+              className="text-[#737373] py-3 px-4 rounded-md border-r-8 border-transparent bg-white shadow-md"
+            >
+              <option value="date">Date</option>
+            </select>
+            <select
+              name="sortby"
+              id="sortby"
+              className="text-[#737373] py-3 px-4 rounded-md border-r-8 border-transparent bg-white shadow-md"
+            >
+              <option value="desc">Descending</option>
+              <option value="asc">Ascending</option>
+            </select>
+          </div>
         </div>
       </div>
 
