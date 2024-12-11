@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios
 import image1 from "../assets/image-1.png";
 import logo from "../assets/logo-login.png";
 import ActionButton from "../components/ActionButton";
@@ -9,10 +10,11 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false); // Untuk menangani kondisi loading
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Periksa apakah user sudah login
   const checkLoginStatus = () => {
-    if (localStorage.getItem("isLoggedIn")) {
+    if (localStorage.getItem("token")) {
       navigate("/dashboard"); // Arahkan langsung ke dashboard
     }
   };
@@ -21,39 +23,42 @@ function Login() {
     checkLoginStatus(); // Jalankan pengecekan saat komponen pertama kali dimuat
   }, []);
 
-  const handleLogin = async () => {
+  const handleLogin = async (event) => {
+    event.preventDefault(); // Mencegah reload halaman
     if (!email || !password) {
       alert("Email dan Password harus diisi!");
       return;
     }
 
     setIsLoading(true);
+    setErrorMessage("");
 
     try {
-      const response = await fetch("http://localhost:3000/users");
-      if (!response.ok) {
-        throw new Error("Gagal mengambil data");
-      }
-      const users = await response.json();
-
-      const user = users.find(
-        (user) => user.email === email && user.password === password
+      // Kirim data ke API
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        {
+          email,
+          password,
+        }
       );
 
-      if (user) {
-        localStorage.setItem("isLoggedIn", "true");
-        localStorage.setItem("email", user.email);
-        localStorage.setItem("fullname", user.fullname);
-        localStorage.setItem("accountNumber", user.accountNumber);
-        localStorage.setItem("balance", user.balance);
+      const { accessToken, user } = response.data;
 
-        navigate("/dashboard");
-      } else {
-        alert("Email atau password salah!");
-      }
+      // Simpan token dan data user ke localStorage
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("email", user.email);
+      localStorage.setItem("fullname", user.fullName);
+      localStorage.setItem("balance", user.balance);
+
+      alert("Login berhasil!");
+      navigate("/dashboard"); // Arahkan ke halaman dashboard
     } catch (error) {
-      alert("Terjadi kesalahan saat memuat data pengguna.");
+      // Tangani error dari backend
       console.error(error);
+      setErrorMessage(
+        error.response?.data?.message || "Login gagal. Coba lagi."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +71,7 @@ function Login() {
         <div>
           <img src={logo} alt="Logo" />
         </div>
-        <form className="flex flex-col mt-24 gap-y-5">
+        <form className="flex flex-col mt-24 gap-y-5" onSubmit={handleLogin}>
           <input
             className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
             type="email"
@@ -83,12 +88,13 @@ function Login() {
           />
           {/* Mengganti tombol submit dengan ActionButton */}
           <ActionButton
-            onClick={handleLogin}
+            type="submit"
             disabled={isLoading} // Tombol nonaktif saat sedang memuat
           >
             {isLoading ? "Loading..." : "Login"}
           </ActionButton>
         </form>
+        {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
         {/* Link Daftar */}
         <p className="text-sm text-black">
           Belum punya akun?{" "}

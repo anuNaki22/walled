@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Tambahkan import axios
 import image1 from "../assets/image-1.png";
 import logo from "../assets/logo-login.png";
 import ActionButton from "../components/ActionButton";
@@ -6,10 +7,38 @@ import ActionButton from "../components/ActionButton";
 function Register() {
   const navigate = useNavigate();
 
-  const handleRegister = (event) => {
+  const handleRegister = async (event) => {
     event.preventDefault(); // Mencegah reload halaman
-    // Anda bisa menambahkan validasi form di sini jika diperlukan
-    navigate("/login"); // Arahkan ke halaman login
+
+    // Ambil data dari form
+    const fullname = event.target.fullname.value;
+    const email = event.target.email.value;
+    const password = event.target.password.value;
+    const phonenumber = event.target.phonenumber.value;
+
+    try {
+      // Kirim data ke backend menggunakan Axios
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/register",
+        {
+          fullName: fullname,
+          email,
+          password,
+          phonenumber,
+        }
+      );
+
+      // Jika sukses, tampilkan pesan dan arahkan ke halaman login
+      alert("Pendaftaran berhasil! Silakan login.");
+      navigate("/login");
+    } catch (error) {
+      // Tampilkan pesan error jika terjadi kesalahan
+      if (error.response) {
+        alert(`Pendaftaran gagal: ${error.response.data.message}`);
+      } else {
+        alert("Pendaftaran gagal. Silakan coba lagi.");
+      }
+    }
   };
 
   return (
@@ -26,6 +55,7 @@ function Register() {
             name="fullname"
             type="text"
             placeholder="Nama Lengkap"
+            required
           />
           <input
             className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
@@ -33,6 +63,7 @@ function Register() {
             name="email"
             type="email"
             placeholder="Email"
+            required
           />
           <input
             className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
@@ -40,6 +71,7 @@ function Register() {
             name="password"
             type="password"
             placeholder="Password"
+            required
           />
           <input
             className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
@@ -47,11 +79,12 @@ function Register() {
             name="phonenumber"
             type="tel"
             placeholder="No HP"
+            required
           />
           {/* Mengganti tombol dengan ActionButton */}
-          <ActionButton onClick={handleRegister}>Daftar</ActionButton>
+          <ActionButton type="submit">Daftar</ActionButton>
         </form>
-        {/* Link Daftar */}
+        {/* Link Login */}
         <p className="text-sm text-black">
           Sudah punya akun?{" "}
           <a href="/login" className="text-darkcyan font-bold">

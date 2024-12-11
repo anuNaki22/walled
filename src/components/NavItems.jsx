@@ -5,8 +5,12 @@ function NavItems({ menu, theme }) {
   const location = useLocation();
 
   const handleLogout = () => {
-    // Menghapus sesi (misalnya token, login status) dari localStorage
+    // Hapus semua item terkait sesi login
+    localStorage.removeItem("token");
     localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("email");
+    localStorage.removeItem("fullname");
+    localStorage.removeItem("balance");
 
     // Navigasi ke halaman login
     navigate("/login", { replace: true });
