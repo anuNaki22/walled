@@ -10,20 +10,21 @@ const TableTransactions = () => {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const response = await fetch("http://localhost:3000/users");
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        // Ambil transaksi pengguna tertentu (misal berdasarkan email dari localStorage)
-        const userEmail = localStorage.getItem("email");
-        const user = data.find((user) => user.email === userEmail);
+        const token = localStorage.getItem("token"); // Ambil token dari localStorage
 
-        if (user && user.transactions) {
-          setTransactions(user.transactions);
-        } else {
-          setTransactions([]);
+        const response = await fetch("http://localhost:8080/api/transactions", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Sertakan token di header
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch transactions");
         }
+
+        const data = await response.json();
+        // console.log("Fetched transactions:", data);
+        setTransactions(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -41,10 +42,6 @@ const TableTransactions = () => {
     <>
       <div className="flex items-center text-black">
         <SearchBar />
-        {/* <div className="ml-auto flex items-center">
-          <span className="text-gray-700">Show</span>
-          <FilterButton />
-        </div> */}
         <div className="ml-auto flex items-center">
           <div className="flex gap-x-4 items-center mr-10">
             <p className="text-[#737373]">Show</p>
