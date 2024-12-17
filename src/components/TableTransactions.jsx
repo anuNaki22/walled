@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import FilterButton from "./FilterButton";
+import { useNavigate } from "react-router-dom";
 
 const TableTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -17,6 +19,13 @@ const TableTransactions = () => {
             Authorization: `Bearer ${token}`, // Sertakan token di header
           },
         });
+
+        // delete token from localstorage an redirect to login when token expired
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+          return;
+        }
 
         if (!response.ok) {
           throw new Error("Failed to fetch transactions");
