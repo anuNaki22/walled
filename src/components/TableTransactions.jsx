@@ -14,13 +14,20 @@ const TableTransactions = () => {
       try {
         const token = localStorage.getItem("token"); // Ambil token dari localStorage
 
-        const response = await fetch("http://localhost:8080/api/transactions", {
-          headers: {
-            Authorization: `Bearer ${token}`, // Sertakan token di header
-          },
-        });
+        const response = await fetch(
+          "https://walled-api.vercel.app/transactions",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Sertakan token di header
+            },
+          }
+        );
 
-        // delete token from localstorage an redirect to login when token expired
+        // if (response.status === 200) {
+        //   console.log(response.data);
+        // }
+
+        // Hapus token jika respons Unauthorized (401)
         if (response.status === 401) {
           localStorage.removeItem("token");
           navigate("/login");
@@ -31,9 +38,13 @@ const TableTransactions = () => {
           throw new Error("Failed to fetch transactions");
         }
 
-        const data = await response.json();
-        // console.log("Fetched transactions:", data);
-        setTransactions(data);
+        const responseData = await response.json();
+        // console.log(responseData.data[0]?.recipient_id);
+        // console.log(responseData.data.map(transaction => transaction.transaction_id));
+        // console.log(responseData.data);
+
+        if (responseData.data[0]?.recipient_id !== "71") console.log("CEK");
+        setTransactions(responseData.data); // Ambil data dari response
       } catch (err) {
         setError(err.message);
       } finally {
@@ -43,7 +54,6 @@ const TableTransactions = () => {
 
     fetchTransactions();
   }, []);
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -88,9 +98,12 @@ const TableTransactions = () => {
         <table className="table-auto w-full text-left border-collapse border border-white">
           <thead className="bg-white">
             <tr>
+              <th className="px-4 py-2 border border-gray-300">
+                Transaction ID
+              </th>
               <th className="px-4 py-2 border border-gray-300">Date & Time</th>
               <th className="px-4 py-2 border border-gray-300">Type</th>
-              <th className="px-4 py-2 border border-gray-300">From / To</th>
+              <th className="px-4 py-2 border border-gray-300">Recipient</th>
               <th className="px-4 py-2 border border-gray-300">Description</th>
               <th className="px-4 py-2 border border-gray-300">Amount</th>
             </tr>
@@ -99,31 +112,44 @@ const TableTransactions = () => {
             {transactions.length > 0 ? (
               transactions.map((transaction, index) => (
                 <tr
-                  key={index}
+                  key={transaction.transaction_id}
                   className={`${
                     index % 2 === 1 ? "bg-white" : "bg-gray-50"
                   } hover:bg-gray-100`}
                 >
                   <td className="px-4 py-2 border border-gray-300">
-                    {transaction.dateTime}
+                    {transaction.transaction_id}
                   </td>
                   <td className="px-4 py-2 border border-gray-300">
-                    {transaction.type}
+                    {new Date(transaction.transaction_date).toLocaleString()}
                   </td>
                   <td className="px-4 py-2 border border-gray-300">
-                    {transaction.fromTo}
+                    {transaction.transaction_type}
+                  </td>
+                  <td className="px-4 py-2 border border-gray-300">
+                    {transaction.recipient_fullname} (
+                    {transaction.recipient_email})
                   </td>
                   <td className="px-4 py-2 border border-gray-300">
                     {transaction.description}
                   </td>
+                  {/* <td
+                    className={`px-4 py-2 border border-gray-300 font-bold text-green-500`}
+                  >
+                    + Rp {parseInt(transaction.amount).toLocaleString()}
+                  </td> */}
                   <td
                     className={`px-4 py-2 border border-gray-300 font-bold ${
-                      transaction.type === "DEBIT"
+                      transaction.transaction_type === "DEBIT" ||
+                      (transaction.transaction_type === "transfer" &&
+                        transaction.recipient_walelt_id !== "32")
                         ? "text-red-500"
                         : "text-green-500"
                     }`}
                   >
-                    {transaction.type === "DEBIT"
+                    {transaction.transaction_type === "DEBIT" ||
+                    (transaction.transaction_type === "transfer" &&
+                      transaction.recipient_walelt_id !== "32")
                       ? `- Rp ${parseInt(transaction.amount).toLocaleString()}`
                       : `+ Rp ${parseInt(transaction.amount).toLocaleString()}`}
                   </td>
@@ -132,7 +158,7 @@ const TableTransactions = () => {
             ) : (
               <tr>
                 <td
-                  colSpan="5"
+                  colSpan="6"
                   className="px-4 py-2 text-center border border-gray-300"
                 >
                   No transactions available

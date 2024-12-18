@@ -5,17 +5,36 @@ function Topup() {
   const [amount, setAmount] = useState(0);
   const [isBalanceLacking, setIsBalanceLacking] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Ambil data user dari db.json saat pertama kali
+  // Ambil data user dari API saat pertama kali
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/users");
-        const data = await response.json();
-        // Anggap kita menggunakan akun pertama di db.json sebagai pengguna aktif
-        setCurrentUser(data.users[0]);
-      } catch (error) {
-        console.error("Gagal mengambil data pengguna:", error);
+      const token = localStorage.getItem("token"); // Ambil token dari localStorage
+
+      if (token) {
+        try {
+          const response = await fetch(
+            "https://walled-api.vercel.app/profile",
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Gagal mengambil data pengguna");
+          }
+
+          const data = await response.json();
+          setCurrentUser(data.data); // Menyimpan data pengguna ke state
+        } catch (error) {
+          console.error("Gagal mengambil data pengguna:", error);
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
@@ -29,36 +48,49 @@ function Topup() {
   const handleTopup = async () => {
     if (!currentUser) return;
 
-    const url = `http://localhost:3000/users/${currentUser.id}`;
+    const token = localStorage.getItem("token"); // Ambil token dari localStorage
 
     try {
-      const newBalance = Number(currentUser.balance) - amount;
+      const response = await fetch(
+        "https://walled-api.vercel.app/transactions/topup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Menambahkan Bearer Token di header
+          },
+          body: JSON.stringify({
+            amount: amount,
+            description: "Top-up balance",
+          }),
+        }
+      );
 
-      const response = await fetch(url, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ balance: newBalance.toString() }),
-      });
-
-      if (response.ok) {
-        const updatedUser = await response.json();
-        console.log("Topup berhasil:", updatedUser);
-        alert("Topup berhasil!");
-        setCurrentUser(updatedUser);
-      } else {
-        alert("Gagal melakukan topup.");
+      if (!response.ok) {
+        throw new Error("Gagal melakukan top-up.");
       }
+
+      const result = await response.json();
+      console.log("Top-up berhasil:", result);
+      alert("Top-up berhasil!");
+
+      // Perbarui saldo pengguna setelah top-up
+      setCurrentUser((prevState) => ({
+        ...prevState,
+        wallet: {
+          ...prevState.wallet,
+          balance: prevState.wallet.balance + amount,
+        },
+      }));
     } catch (error) {
-      console.error("Terjadi kesalahan saat melakukan topup:", error);
+      console.error("Terjadi kesalahan saat melakukan top-up:", error);
     }
   };
 
   const handleSubmit = () => {
     if (!currentUser) return;
 
-    if (currentUser.balance < amount) {
+    if (currentUser.wallet.balance < amount) {
       setIsBalanceLacking(true);
     } else {
       setIsBalanceLacking(false);
@@ -66,26 +98,13 @@ function Topup() {
     }
   };
 
+  if (loading) return <div>Loading...</div>;
+
   return (
     <section className="w-full px-16 pt-12 bg-[#fafbfd] text-black">
       <div className="w-1/2 mx-auto">
         <h1 className="font-bold text-5xl">Topup</h1>
         <div className="mt-6 shadow-[0_0_10px_0_rgba(91,91,91,0.1)] bg-white py-[56px] px-[56px] rounded-[20px]">
-          <div
-            className="w-full flex shadow-[0_0_10px0_rgba(91, 91, 91, 0.1)];
-"
-          >
-            <button className="absolute z-50 py-4 px-8 bg-[#EDEDED] rounded-[20px] font-bold text-2xl">
-              <label htmlFor="to">From</label>
-            </button>
-            <select
-              name="to"
-              id="to"
-              className="relative w-full bg-[#FAFBFD] text-[#737373] py-5 pr-4 pl-8 ml-[100px] rounded-[10px] border-r-8 border-transparent outline-none"
-            >
-              <option value="900782139">900782139 (Giz)</option>
-            </select>
-          </div>
           <div className="pt-5 px-8 pb-9 mt-7 bg-[#FAFBFD] rounded-[20px]">
             <h2 className="font-semibold">Amount</h2>
             <span className="font-semibold">IDR</span>
@@ -96,10 +115,22 @@ function Topup() {
               className="bg-[#FAFBFD] outline-none ml-2 mt-2 font-semibold"
             />
           </div>
-          <p className="mt-2.5 text-[#26AA99] font-semibold">
-            Balance: IDR{" "}
-            {new Intl.NumberFormat("id-ID").format(currentUser?.balance)}
-          </p>
+
+          <div className="w-full flex shadow-[0_0_10px0_rgba(91, 91, 91, 0.1)];">
+            <button className="absolute z-50 py-4 px-8 bg-[#EDEDED] rounded-[20px] font-bold text-2xl">
+              <label htmlFor="to">From</label>
+            </button>
+            <select
+              name="to"
+              id="to"
+              className="relative w-full bg-[#FAFBFD] text-[#737373] py-5 pr-4 pl-8 ml-[100px] rounded-[10px] border-r-8 border-transparent outline-none"
+            >
+              <option value="900782139">BYOND</option>
+              <option value="900782139">BSI Mobile</option>
+              <option value="900782139">Credit Card</option>
+            </select>
+          </div>
+
           <div className="py-4 px-8 mt-7 bg-[#FAFBFD] rounded-[20px]">
             <label htmlFor="notes" className="font-semibold">
               Notes:

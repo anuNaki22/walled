@@ -8,31 +8,38 @@ function Register() {
   const navigate = useNavigate();
 
   const handleRegister = async (event) => {
-    event.preventDefault(); // Mencegah reload halaman
+    event.preventDefault();
 
     // Ambil data dari form
     const fullname = event.target.fullname.value;
+    const username = event.target.username.value; // Ambil username
     const email = event.target.email.value;
     const password = event.target.password.value;
-    const phonenumber = event.target.phonenumber.value;
+    const avatar_url =
+      event.target.avatar_url.value ||
+      "https://cdn-icons-png.flaticon.com/512/219/219986.png"; // Default avatar
 
     try {
       // Kirim data ke backend menggunakan Axios
       const response = await axios.post(
-        "http://localhost:8080/api/auth/register",
+        "https://walled-api.vercel.app/auth/register",
         {
-          fullName: fullname,
           email,
+          username,
           password,
-          phonenumber,
+          avatar_url,
+          fullname,
         }
       );
 
-      // Jika sukses, tampilkan pesan dan arahkan ke halaman login
-      alert("Pendaftaran berhasil! Silakan login.");
+      // Jika berhasil, tampilkan pesan dan arahkan ke login
+      const { fullname: registeredName, wallet } = response.data.data;
+      alert(
+        `Pendaftaran berhasil!\nSelamat datang, ${registeredName}.\nNo. Rekening: ${wallet.account_number}`
+      );
       navigate("/login");
     } catch (error) {
-      // Tampilkan pesan error jika terjadi kesalahan
+      // Tangani error dari server
       if (error.response) {
         alert(`Pendaftaran gagal: ${error.response.data.message}`);
       } else {
@@ -59,6 +66,14 @@ function Register() {
           />
           <input
             className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
+            id="username"
+            name="username"
+            type="text"
+            placeholder="Username"
+            required
+          />
+          <input
+            className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
             id="email"
             name="email"
             type="email"
@@ -75,11 +90,10 @@ function Register() {
           />
           <input
             className="bg-[#FAFBFD] pl-7 py-4 min-w-[400px] rounded-[10px]"
-            id="phonenumber"
-            name="phonenumber"
-            type="tel"
-            placeholder="No HP"
-            required
+            id="avatar_url"
+            name="avatar_url"
+            type="url"
+            placeholder="Link Avatar (Opsional)"
           />
           {/* Mengganti tombol dengan ActionButton */}
           <ActionButton type="submit">Daftar</ActionButton>

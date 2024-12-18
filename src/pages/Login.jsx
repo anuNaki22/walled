@@ -24,7 +24,7 @@ function Login() {
   }, []);
 
   const handleLogin = async (event) => {
-    event.preventDefault(); // Mencegah reload halaman
+    event.preventDefault();
     if (!email || !password) {
       alert("Email dan Password harus diisi!");
       return;
@@ -36,23 +36,18 @@ function Login() {
     try {
       // Kirim data ke API
       const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
-        {
-          email,
-          password,
-        }
+        "https://walled-api.vercel.app/auth/login",
+        { email, password }
       );
 
-      const { accessToken, user } = response.data;
+      // Ambil token dari response data
+      const { token } = response.data.data;
 
-      // Simpan token dan data user ke localStorage
-      localStorage.setItem("token", accessToken);
-      localStorage.setItem("email", user.email);
-      localStorage.setItem("fullname", user.fullName);
-      localStorage.setItem("balance", user.balance);
+      // Simpan token ke localStorage
+      localStorage.setItem("token", token);
 
       alert("Login berhasil!");
-      navigate("/dashboard"); // Arahkan ke halaman dashboard
+      navigate("/dashboard");
     } catch (error) {
       // Tangani error dari backend
       console.error(error);
